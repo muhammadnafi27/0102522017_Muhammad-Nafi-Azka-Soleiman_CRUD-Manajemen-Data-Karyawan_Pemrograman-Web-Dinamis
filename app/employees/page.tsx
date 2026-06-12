@@ -1,46 +1,70 @@
 import prisma from "@/lib/prisma";
 import EmployeeTable from "./EmployeeTable";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Users, Building2, Briefcase } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
+import { StatCard } from "@/components/shared/StatCard";
+import { Button } from "@/components/ui/Button";
 
-// In Next.js 15, we don't need to specify `export const dynamic = "force-dynamic"` 
-// if we're not using headers()/cookies() and want to let it be statically optimized where possible,
-// but since this fetches from DB, we might want dynamic rendering. 
-// Or we can rely on Server Actions revalidating paths.
 export const dynamic = "force-dynamic";
 
 export default async function EmployeesPage() {
-  const employees = await prisma.employee.findMany({
-    include: {
-      position: {
-        include: {
-          department: true
-        }
+  const [employees, departmentsCount, positionsCount] = await Promise.all([
+    prisma.employee.findMany({
+      include: {
+        position: {
+          include: { department: true }
+        },
+        skills: true
       },
-      skills: true
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
-  });
+      orderBy: { createdAt: 'desc' }
+    }),
+    prisma.department.count(),
+    prisma.position.count()
+  ]);
+
+  const activeEmployees = employees.filter(e => e.status === 'active').length;
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Data Karyawan</h1>
-          <p className="text-slate-500 text-sm mt-1">Kelola data karyawan, departemen, dan posisi.</p>
-        </div>
-        <Link 
-          href="/employees/new" 
-          className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2.5 rounded-lg font-medium shadow-sm transition-colors"
-        >
-          <Plus size={18} />
-          Tambah Karyawan
-        </Link>
+    <div className="max-w-7xl mx-auto space-y-8">
+      <PageHeader 
+        title="Dashboard Karyawan" 
+        description="Kelola data karyawan, departemen, dan pantau metrik utama perusahaan Anda."
+        action={
+          <Link href="/employees/new">
+            <Button className="gap-2">
+              <Plus size={18} />
+              <span>Tambah Karyawan</span>
+            </Button>
+          </Link>
+        }
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatCard 
+          title="Total Karyawan" 
+          value={employees.length} 
+          icon={<Users size={24} />} 
+          trend={{ value: `${activeEmployees} Aktif`, isPositive: true }}
+        />
+        <StatCard 
+          title="Departemen" 
+          value={departmentsCount} 
+          icon={<Building2 size={24} />} 
+        />
+        <StatCard 
+          title="Posisi Jabatan" 
+          value={positionsCount} 
+          icon={<Briefcase size={24} />} 
+        />
       </div>
 
-      <EmployeeTable employees={employees} />
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="p-6 border-b border-slate-200 bg-slate-50/50">
+          <h2 className="text-lg font-semibold text-slate-900">Daftar Karyawan</h2>
+        </div>
+        <EmployeeTable employees={employees} />
+      </div>
     </div>
   );
 }

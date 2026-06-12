@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react";
 import { deleteEmployee } from "./actions";
 import { useTransition } from "react";
+import { Button } from "@/components/ui/Button";
 
 export default function DeleteButton({ id }: { id: number }) {
   const [isPending, startTransition] = useTransition();
@@ -20,13 +21,15 @@ export default function DeleteButton({ id }: { id: number }) {
   };
 
   return (
-    <button 
+    <Button 
+      variant="ghost"
+      size="icon"
       onClick={handleDelete}
       disabled={isPending}
-      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-      title="Hapus"
+      className="text-slate-400 hover:text-red-600 hover:bg-red-50"
+      title="Hapus Data"
     >
       <Trash2 size={18} />
-    </button>
+    </Button>
   );
 }
