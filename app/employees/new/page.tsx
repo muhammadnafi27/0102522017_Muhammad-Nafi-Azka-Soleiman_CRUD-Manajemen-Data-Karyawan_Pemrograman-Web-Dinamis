@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import EmployeeForm from "../EmployeeForm";
+import EmployeeForm from "../components/EmployeeForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
