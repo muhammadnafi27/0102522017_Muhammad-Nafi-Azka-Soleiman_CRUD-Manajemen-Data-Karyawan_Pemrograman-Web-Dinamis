@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// Menyimpan data departemen/divisi dalam perusahaan
+model Department {
+  id        Int        @id @default(autoincrement())
+  name      String
+  positions Position[]
+}
+
+/// Menyimpan daftar posisi jabatan yang spesifik untuk setiap departemen
+model Position {
+  id           Int        @id @default(autoincrement())
+  name         String
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  employees    Employee[]
+
+  @@index([departmentId])
+}
+
+/// Menyimpan daftar keahlian yang bisa dimiliki oleh banyak karyawan
+model Skill {
+  id        Int        @id @default(autoincrement())
+  name      String
+  employees Employee[]
+}
+
+/// Menyimpan data utama karyawan beserta relasi ke posisi dan keahlian
+model Employee {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  gender     String
+  status     String
+  photoPath  String?
+  positionId Int
+  position   Position @relation(fields: [positionId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  skills     Skill[]
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@index([positionId])
+}
+
