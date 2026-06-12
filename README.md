@@ -1,85 +1,95 @@
 # HRMS - Manajemen Data Karyawan
 
-HRMS (Human Resource Management System) adalah aplikasi web modern berbasis dashboard untuk mengelola data karyawan. Dibangun menggunakan teknologi terkini (Next.js 14 App Router, TypeScript, Tailwind CSS v4, Prisma, MySQL) dengan antarmuka yang profesional, *clean*, dan *responsive*.
+Aplikasi **HRMS (Human Resource Management System)** adalah proyek aplikasi web dinamis berbasis *dashboard* yang dirancang untuk mengelola data karyawan perusahaan secara terpusat, efisien, dan modern. 
 
-## Fitur Utama
+Proyek ini dibangun untuk memenuhi kriteria pengembangan aplikasi web modern dengan mengimplementasikan konsep *Server-Side Rendering* (SSR), *Client-Side Interactivity*, serta manipulasi database relasional menggunakan ekosistem **Next.js**.
 
-- **Dashboard Analitik**: Ringkasan jumlah karyawan, status aktif/nonaktif, distribusi departemen dan jabatan, serta statistik keahlian.
-- **Manajemen Data (CRUD)**: Tambah, edit, dan hapus data karyawan.
-- **Pencarian & Filter**: Cari karyawan berdasarkan nama atau email, dan filter berdasarkan status (Aktif, Probation, Nonaktif).
-- **Pagination**: Menampilkan data dalam jumlah tertentu per halaman agar lebih rapi dan cepat diakses.
-- **Upload Foto Profil**: Mendukung unggah foto profil karyawan saat penambahan atau pengubahan data.
-- **Sidebar Interaktif**: Desain sidebar *glassmorphic* yang dapat di-*collapse* dengan tooltip yang responsif.
-- **Desain Modern & Responsif**: Menggunakan tema warna *teal* yang konsisten, desain yang memukau (UI/UX), dan optimal untuk perangkat desktop maupun mobile.
+## 🌟 Fitur Unggulan
 
-## Teknologi yang Digunakan
+Proyek ini tidak hanya sekadar menampilkan data, tetapi mengimplementasikan logika *Dynamic Web Programming* yang kompleks, di antaranya:
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
-- **Bahasa Pemrograman**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **Database & ORM**: MySQL & [Prisma ORM](https://www.prisma.io/)
-- **Icon**: [Lucide React](https://lucide.dev/)
+- **Dashboard Analitik Dinamis**: Menampilkan statistik *real-time* mengenai total karyawan, tingkat keaktifan, distribusi departemen, dan keterampilan dominan yang dimiliki karyawan.
+- **Operasi CRUD Terintegrasi (Create, Read, Update, Delete)**: Manajemen data karyawan secara utuh, mendukung relasi database (Jabatan, Departemen, dan Keahlian/Skills).
+- **Pencarian, Filter, & Pagination Berbasis URL**: Implementasi pencarian *real-time* (berdasarkan nama/email) dan filter status (Aktif, Probation, Nonaktif) yang disinkronkan dengan *Query Parameters* URL untuk mendukung *shareability*.
+- **Upload & Preview Foto Profil Lokal**: Form karyawan dilengkapi validasi ukuran file (Maks. 2MB) dan format ekstensi, serta *live-preview* foto menggunakan `URL.createObjectURL` sebelum data dikirimkan ke server.
+- **Server Actions untuk Keamanan Data**: Form *submission* tidak melalui API Routes tradisional, melainkan menggunakan fitur *Server Actions* dari Next.js App Router agar eksekusi logika form (*upload file*, *database query*) dilakukan langsung dan aman di sisi server.
+- **Antarmuka Modern (Glassmorphism & Responsive)**: Desain UI/UX kelas atas dengan palet warna *Teal*, animasi mikro, *collapsible sidebar* (bisa dilipat/dibuka), dan sepenuhnya dioptimalkan untuk akses dari perangkat desktop maupun mobile.
 
-## Tangkapan Layar (Screenshots)
+## 🛠 Teknologi yang Digunakan
 
-### 1. Dashboard
-Halaman utama yang menampilkan ringkasan data, struktur perusahaan, dan distribusi status karyawan.
+Aplikasi ini menggunakan pendekatan *Full-Stack* dengan spesifikasi teknis berikut:
+
+- **Frontend & Backend Framework**: [Next.js 14 (App Router)](https://nextjs.org/)
+- **Bahasa Pemrograman**: [TypeScript](https://www.typescriptlang.org/) (Strict Typing)
+- **Styling Engine**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **ORM (Object-Relational Mapping)**: [Prisma ORM](https://www.prisma.io/)
+- **Relational Database**: MySQL
+- **Ikon**: [Lucide React](https://lucide.dev/)
+
+## 📸 Tangkapan Layar (Screenshots)
+
+### 1. Dashboard Analitik
+Halaman utama yang memberikan wawasan cepat (*birds-eye view*) mengenai metrik penting sumber daya manusia di perusahaan.
 ![Dashboard](docs/screenshots/01-dashboard.png)
 
-### 2. Data Karyawan
-Tabel daftar karyawan yang rapi dilengkapi fitur pencarian, filter status, dan pagination.
+### 2. Daftar Karyawan (Data Table)
+Tabel data dinamis yang dilengkapi dengan fitur *Search*, *Filter* Status, *Pagination*, dan desain data tabular yang bersih dan ergonomis.
 ![Data Karyawan](docs/screenshots/02-data-karyawan.png)
 
-### 3. Tambah Karyawan
-Form modern untuk menambahkan data karyawan baru lengkap dengan validasi dan upload foto profil.
+### 3. Form Tambah/Edit Karyawan
+Formulir *multi-input* interaktif yang menangani relasi data (pilihan dropdown jabatan bergantung pada departemen) dan pratinjau foto profil secara *real-time*.
 ![Tambah Karyawan](docs/screenshots/03-tambah-karyawan.png)
 
-### 4. Tabel Detail
-Tampilan tabel yang memuat foto profil, jabatan, status, serta tombol aksi yang intuitif.
+### 4. Detail Tabel Aksi
+*Close-up* dari tabel data yang memuat *Badge* Status warna-warni, *Pill* Keahlian (Skills), serta tombol navigasi aksi yang intuitif.
 ![Tabel Detail](docs/screenshots/04-tabel-detail.png)
 
-## Cara Menjalankan Proyek Secara Lokal
+## 🚀 Cara Menjalankan Proyek Secara Lokal
 
-### Prasyarat
-Pastikan Anda telah menginstal:
-- [Node.js](https://nodejs.org/) (versi 18.x atau terbaru)
-- MySQL Server (XAMPP/MAMP atau Docker)
+### Prasyarat Instalasi
+Pastikan komputer Anda sudah terinstal:
+- [Node.js](https://nodejs.org/) (Minimal v18.x)
+- Server Database MySQL (dapat menggunakan XAMPP, MAMP, atau Docker)
 
-### Langkah-langkah
+### Langkah-langkah Menjalankan
 
-1. **Clone repositori ini** (atau unduh dan ekstrak ke direktori Anda).
-
-2. **Masuk ke direktori proyek:**
+1. **Unduh atau Clone Repositori Ini**
+   Buka terminal, lalu masuk ke folder proyek hasil unduhan Anda:
    ```bash
    cd manajemen-data-karyawan
    ```
 
-3. **Instal dependensi:**
+2. **Instalasi Dependensi Node Modules**
    ```bash
    npm install
    ```
 
-4. **Konfigurasi Database:**
-   - Buat database baru di MySQL (misalnya: `hrms_db`).
-   - Buat file `.env` di *root* proyek.
-   - Isi `DATABASE_URL` dengan kredensial MySQL Anda:
+3. **Konfigurasi Database MySQL**
+   - Buat database kosong di MySQL Anda (misalnya: `hrms_db`).
+   - Buat file bernama `.env` di dalam folder *root* proyek ini.
+   - Tambahkan *Connection String* MySQL Anda ke dalam file `.env`:
      ```env
      DATABASE_URL="mysql://username:password@localhost:3306/hrms_db"
      ```
+     *(Silakan sesuaikan `username`, `password`, dan nama database `hrms_db` dengan kredensial milik Anda).*
 
-5. **Jalankan Migrasi Prisma:**
+4. **Jalankan Migrasi Skema Prisma**
+   Perintah ini akan secara otomatis membuat struktur tabel yang diperlukan langsung di dalam database MySQL Anda.
    ```bash
    npx prisma generate
    npx prisma db push
    ```
 
-6. **Jalankan Development Server:**
+5. **Jalankan Server Development**
    ```bash
    npm run dev
    ```
 
-7. **Akses Aplikasi:**
-   Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
+6. **Akses Aplikasi Melalui Browser**
+   Buka URL berikut di browser Anda: [http://localhost:3000](http://localhost:3000)
 
 ---
-*Dikembangkan untuk keperluan portofolio oleh Muhammad Nafi Azka Soleiman.*
+**Muhammad Nafi Azka Soleiman**  
+**Nomor Induk Mahasiswa (NIM) : 0102522017**  
+**IF22A**  
+**Tugas Pemrograman Web Dinamis**

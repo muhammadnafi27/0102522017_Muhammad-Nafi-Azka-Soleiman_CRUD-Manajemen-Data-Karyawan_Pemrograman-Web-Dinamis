@@ -32,6 +32,7 @@ export default function EmployeeForm({
     employee ? departments.find(d => d.positions.some(p => p.id === employee.positionId))?.id || "" : ""
   );
   
+  const [photoPreview, setPhotoPreview] = useState<string | null>(employee?.photoPath || null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
 
@@ -69,8 +70,8 @@ export default function EmployeeForm({
       <form onSubmit={handleSubmit} className="p-8 space-y-8">
         <div className="bg-slate-50/50 rounded-xl p-6 border border-slate-200 border-dashed flex flex-col md:flex-row items-start md:items-center gap-6">
           <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-100 relative shrink-0">
-            {employee?.photoPath ? (
-              <Image src={employee.photoPath} alt={employee.name} fill sizes="96px" className="object-cover" />
+            {photoPreview ? (
+              <Image src={photoPreview} alt={employee?.name || "Preview"} fill sizes="96px" className="object-cover" />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center text-teal-600">
                 <UploadCloud size={28} className="mb-1 text-teal-400" />
@@ -84,6 +85,14 @@ export default function EmployeeForm({
               type="file" 
               name="photo" 
               accept="image/jpeg,image/png,image/webp"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setPhotoPreview(URL.createObjectURL(file));
+                } else {
+                  setPhotoPreview(employee?.photoPath || null);
+                }
+              }}
               className="block w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer transition-colors focus:outline-none"
             />
           </div>
