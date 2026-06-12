@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
 import { createEmployee, updateEmployee } from "./actions";
 import Link from "next/link";
 import { Prisma } from "@prisma/client";
+import Image from "next/image";
 
 type DepartmentWithPositions = Prisma.DepartmentGetPayload<{
   include: { positions: true }
@@ -26,13 +27,80 @@ export default function EmployeeForm({
   const [selectedDeptId, setSelectedDeptId] = useState<number | "">(
     employee ? departments.find(d => d.positions.some(p => p.id === employee.positionId))?.id || "" : ""
   );
+  
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
   const availablePositions = departments.find(d => d.id === Number(selectedDeptId))?.positions || [];
 
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPending(true);
+    setErrorMsg(null);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    
+    // Client-side File Validation
+    const file = formData.get("photo") as File | null;
+    if (file && file.size > 0) {
+      if (file.size > 2 * 1024 * 1024) {
+        setErrorMsg("Ukuran foto tidak boleh lebih dari 2MB.");
+        setIsPending(false);
+        return;
+      }
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        setErrorMsg("Format file harus JPG, PNG, atau WEBP.");
+        setIsPending(false);
+        return;
+      }
+    }
+
+    try {
+      if (isEditing) {
+        await updateEmployee(employee.id, formData);
+      } else {
+        await createEmployee(formData);
+      }
+    } catch (err: any) {
+      setErrorMsg(err.message || "Terjadi kesalahan sistem.");
+      setIsPending(false);
+    }
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden max-w-3xl">
-      <form action={isEditing ? updateEmployee.bind(null, employee.id) : createEmployee} className="p-8 space-y-6">
+      {errorMsg && (
+        <div className="bg-red-50 text-red-600 p-4 border-b border-red-100 text-sm font-medium">
+          {errorMsg}
+        </div>
+      )}
+      
+      <form onSubmit={handleSubmit} className="p-8 space-y-6">
         
+        {/* Photo Upload */}
+        <div className="space-y-3">
+          <label className="text-sm font-medium text-slate-700">Foto Profil (Opsional, Maks 2MB)</label>
+          <div className="flex items-center gap-4">
+            {employee?.photoPath ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden border border-slate-200 relative shrink-0">
+                <Image src={employee.photoPath} alt={employee.name} fill className="object-cover" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 text-slate-400">
+                <span>Foto</span>
+              </div>
+            )}
+            <input 
+              type="file" 
+              name="photo" 
+              accept="image/jpeg,image/png,image/webp"
+              className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition-colors"
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label htmlFor="name" className="text-sm font-medium text-slate-700">Nama Lengkap <span className="text-red-500">*</span></label>
@@ -168,9 +236,10 @@ export default function EmployeeForm({
           </Link>
           <button 
             type="submit"
-            className="px-6 py-2.5 rounded-lg bg-teal-600 text-white font-medium hover:bg-teal-700 shadow-sm transition-colors"
+            disabled={isPending}
+            className="px-6 py-2.5 rounded-lg bg-teal-600 text-white font-medium hover:bg-teal-700 shadow-sm transition-colors disabled:opacity-50"
           >
-            {isEditing ? "Simpan Perubahan" : "Tambah Karyawan"}
+            {isPending ? "Menyimpan..." : isEditing ? "Simpan Perubahan" : "Tambah Karyawan"}
           </button>
         </div>
 

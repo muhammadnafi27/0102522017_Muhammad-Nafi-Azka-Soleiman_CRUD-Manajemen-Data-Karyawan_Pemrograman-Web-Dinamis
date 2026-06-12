@@ -8,9 +8,13 @@ export default function DeleteButton({ id }: { id: number }) {
   const [isPending, startTransition] = useTransition();
 
   const handleDelete = () => {
-    if (confirm("Apakah Anda yakin ingin menghapus data karyawan ini?")) {
-      startTransition(() => {
-        deleteEmployee(id);
+    if (confirm("Apakah Anda yakin ingin menghapus data karyawan ini? Tindakan ini tidak dapat dibatalkan.")) {
+      startTransition(async () => {
+        try {
+          await deleteEmployee(id);
+        } catch (error) {
+          alert("Gagal menghapus data.");
+        }
       });
     }
   };
